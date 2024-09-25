@@ -9,10 +9,10 @@ import api from '../../services/api'
 function Home() { // Componente HOME
 
   const [usuarios, setUsuario] = useState([]) // nessa estrutura eu uso o useState para atualizar dinamicamente minha página | toda vez que eu quiser alterar o usuarios, eu uso a linha 13
+  const [editAPI, setEditAPI] = useState([])
   const inputName = useRef()
   const inputIdade = useRef()
   const inputEmail = useRef()
-  let coletaEdit = ""
   async function getUsuarios() { // método para acessar minha rota GET do meu servidor para listar os usuarios
     const usuariosFrom = await api.get('/usuarios')
     setUsuario(usuariosFrom.data)
@@ -41,7 +41,7 @@ function Home() { // Componente HOME
 
 
   function editarUsuario(id) { // método para acessar minha rota PUT do meu servidor para editar um usuario
-    coletaEdit = id
+
     const editUsuario = usuarios.filter((usuario) => usuario.id === id)
     document.getElementById('cadastrar').style.display = 'none';
     document.getElementById('editar').style.display = 'inline';
@@ -49,14 +49,17 @@ function Home() { // Componente HOME
     inputName.current.value = editUsuario[0].name
     inputIdade.current.value = editUsuario[0].age
     inputEmail.current.value = editUsuario[0].email
-    getUsuarios()
+    setEditAPI(id)
+    
   }
+
   async function editarUsuarioAPI() { // método para acessar minha rota PUT do meu servidor para editar um usuario
-    /*await api.put(`/usuarios/${editarUsuario[0].id}`, {
-      name: inputName.current.value,
-      age: inputIdade.current.value,
-      email: inputEmail.current.value
+    await api.put(`/usuarios/${editAPI}`, {
+    email: inputEmail.current.value,
+    name: inputName.current.value,
+    age: inputIdade.current.value
     })
+    
     document.getElementById('cadastrar').style.display = 'inline';
     document.getElementById('editar').style.display = 'none';
     document.querySelector('h1').innerHTML = 'Cadastro de usuários'
@@ -65,9 +68,8 @@ function Home() { // Componente HOME
     inputEmail.current.value = ""
     getUsuarios()
     alert("Usuario alterado com sucesso")
-    */
-   console.log(coletaEdit)
-  }
+    
+    }
 
   useEffect(() => { // Estrutura báscia do useEffect para chamar meu método getUsuarios assim que minha página carregar
     getUsuarios()
